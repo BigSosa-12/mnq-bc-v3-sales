@@ -193,7 +193,7 @@ table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.95rem}th,td{p
 <section class="buy" id="buy">
 <div class="glass pp"><div class="logo">EX<i>1.1</i></div><div style="color:var(--mu);font-size:.85rem">One-Time Access Price</div><div class="big">$250</div><div class="rise">Rising to $400</div>
 <p>Market structure. Price action. Retest entries. Defined exits and risk controls. One dashboard.</p>
-<a class="btn buyex" href="https://buy.stripe.com/7sY6oI6v6bRo67G8nF4AU09" rel="noopener">UNLOCK EX1.1</a><small>Secure checkout powered by Stripe.</small></div>
+<a class="btn buyex" href="https://buy.stripe.com/7sY6oI6v6bRo67G8nF4AU09" rel="noopener">UNLOCK EX1.1</a><small>Secure checkout powered by Stripe. Use an email you check often: your indicator code is delivered to the email you enter at checkout.</small></div>
 <div class="glass risk"><h3>Risk disclosure</h3>EX1.1 is a technical-analysis indicator provided for educational and informational purposes only. It is not financial or investment advice. Trading futures involves substantial risk and may result in significant financial losses. Past performance and hypothetical backtesting results do not guarantee future performance. No indicator can guarantee profitable trades. All trading decisions and risks remain the responsibility of the user.</div>
 </section>
 
@@ -263,12 +263,17 @@ function blocks(scope){var els=scope?[scope]:Array.prototype.slice.call(document
 function mark(el){if(curEl)curEl.classList.remove('speaking');curEl=el;if(el){el.classList.add('speaking');try{el.scrollIntoView({block:'center',behavior:'smooth'})}catch(e){}}}
 function setUI(){lp.disabled=false;lpa.disabled=!playing;ls.disabled=!playing;lpa.innerHTML=paused?'&#9654; Resume':'&#10074;&#10074; Pause';lp.innerHTML=playing?'&#8635; Restart':'&#9654; Play all'}
 function speakNext(my){if(my!==token)return;if(idx>=queue.length){stop(true);return}var b=queue[idx];if(b.el!==curEl)mark(b.el);var u=new SpeechSynthesisUtterance(say(b.txt));if(voice)u.voice=voice;u.lang=(voice&&voice.lang)||'en-US';u.rate=parseFloat(spd.value)||1;u.pitch=1.08;u.volume=1;u.onend=function(){if(my===token){idx++;speakNext(my)}};u.onerror=function(e){if(my===token&&e.error!=='canceled'&&e.error!=='interrupted'){st.textContent='Audio unavailable on this device.';stop()}};st.textContent='Section '+(queue.length?Math.min(idx+1,queue.length):0)+' of '+queue.length;synth.speak(u)}
-function start(scope){stop();token++;queue=blocks(scope);if(!queue.length)return;idx=0;playing=true;paused=false;setUI();speakNext(token)}
-function stop(done){token++;try{synth.cancel()}catch(e){}playing=false;paused=false;mark(null);st.textContent=done?'Finished':'';setUI()}
+function startTTS(scope){stop();token++;queue=blocks(scope);if(!queue.length)return;idx=0;playing=true;paused=false;setUI();speakNext(token)}
+function stop(done){token++;if(aud){aud.onended=aud.onerror=null;try{aud.pause()}catch(e){}aud=null}audQ=[];try{synth.cancel()}catch(e){}playing=false;paused=false;mark(null);st.textContent=done?'Finished':'';setUI()}
+
+var aud=null,audQ=[],audI=0,audMode=false,audScope=null;
+function nameOf(el){if(el.classList.contains('lh'))return 'intro';if(el.classList.contains('final'))return 'final';return el.id||''}
+function playAudio(my){if(my!==token)return;if(audI>=audQ.length){stop(true);return}var el=audQ[audI];mark(el);var a=new Audio('audio/'+nameOf(el)+'.mp3');aud=a;a.playbackRate=parseFloat(spd.value)||1;var started=false;a.onplaying=function(){started=true;audMode=true;if(vsel&&vsel.parentNode)vsel.parentNode.style.display='none'};a.onended=function(){if(my===token){audI++;playAudio(my)}};a.onerror=function(){if(my!==token)return;if(!started&&audI===0){aud=null;audQ=[];startTTS(audScope)}else{audI++;playAudio(my)}};st.textContent='Section '+(audI+1)+' of '+audQ.length;var pr=a.play();if(pr&&pr.catch)pr.catch(function(){if(my===token&&!started&&audI===0){aud=null;audQ=[];startTTS(audScope)}})}
+function start(scope){stop();token++;audScope=scope;var els=scope?[scope]:Array.prototype.slice.call(document.querySelectorAll('#tab-learn .lh,#tab-learn .lsec,#tab-learn .final'));audQ=els.filter(function(e){return nameOf(e)});if(!audQ.length){startTTS(scope);return}audI=0;playing=true;paused=false;setUI();playAudio(token)}
 lp.addEventListener('click',function(){start(null)});
-lpa.addEventListener('click',function(){if(!playing)return;if(paused){synth.resume();paused=false}else{synth.pause();paused=true}setUI()});
+lpa.addEventListener('click',function(){if(!playing)return;if(aud){if(paused){aud.play();paused=false}else{aud.pause();paused=true}}else{if(paused){synth.resume();paused=false}else{synth.pause();paused=true}}setUI()});
 ls.addEventListener('click',function(){stop()});
-spd.addEventListener('change',function(){if(playing){var i=idx,sc=queue.length?null:null;token++;try{synth.cancel()}catch(e){}var my=token;playing=true;paused=false;setUI();idx=i;speakNext(my)}});
+spd.addEventListener('change',function(){if(aud){aud.playbackRate=parseFloat(spd.value)||1;return}if(playing){var i=idx,sc=queue.length?null:null;token++;try{synth.cancel()}catch(e){}var my=token;playing=true;paused=false;setUI();idx=i;speakNext(my)}});
 var secs=document.querySelectorAll('#tab-learn .lsec .lt');for(var k=0;k<secs.length;k++){(function(lt){var b=document.createElement('button');b.type='button';b.className='sbtn';b.innerHTML='&#128266; Listen to this section';var h=lt.querySelector('h3');if(h&&h.nextSibling)h.parentNode.insertBefore(b,h.nextSibling);else lt.appendChild(b);b.addEventListener('click',function(){start(lt.parentNode)})})(secs[k])}
 ['r-ex','r-learn'].forEach(function(id){var r=document.getElementById(id);if(r)r.addEventListener('change',function(){stop()})});
 window.addEventListener('pagehide',function(){try{synth.cancel()}catch(e){}});
