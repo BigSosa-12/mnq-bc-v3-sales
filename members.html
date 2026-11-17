@@ -1,0 +1,15 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>EX1.1 Members</title>
+<style>body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#07090c;color:#e8eef2;font:16px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;padding:20px}.b{max-width:420px;width:100%;padding:28px;border:1px solid rgba(45,226,208,.35);border-radius:20px;background:rgba(255,255,255,.04);box-shadow:0 0 40px rgba(45,226,208,.1)}h1{font-size:1.4rem;margin:0 0 6px}p{color:#9aa7b0;margin:6px 0 16px;font-size:.92rem}input{width:100%;box-sizing:border-box;font:inherit;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:#0c1014;color:#fff;margin-bottom:12px}button{width:100%;font:inherit;font-weight:700;padding:12px;border-radius:12px;border:1px solid rgba(45,226,208,.6);background:rgba(45,226,208,.15);color:#2de2d0;cursor:pointer}#e{color:#ff5b6b;font-size:.88rem;min-height:1.2em;margin-top:10px}</style></head><body>
+<form class="b" id="f"><h1>EX1.1 Members</h1><p>Enter the access code from your purchase email to open the full Trading Overview, audio walkthrough and quiz.</p><input id="p" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Access code" required><button type="submit" id="g">Unlock</button><div id="e" role="alert"></div></form>
+<script>
+var f=document.getElementById('f'),e=document.getElementById('e'),g=document.getElementById('g');
+function d(s){var r=atob(s),u=new Uint8Array(r.length);for(var i=0;i<r.length;i++)u[i]=r.charCodeAt(i);return u}
+f.addEventListener('submit',function(ev){ev.preventDefault();e.textContent='';g.disabled=true;g.textContent='Unlocking...';
+fetch('members.enc').then(function(r){return r.json()}).then(function(j){
+var pw=document.getElementById('p').value.trim().toUpperCase();
+return crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']).then(function(k){
+return crypto.subtle.deriveKey({name:'PBKDF2',salt:d(j.s),iterations:j.n,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['decrypt'])}).then(function(key){
+return crypto.subtle.decrypt({name:'AES-GCM',iv:d(j.i)},key,d(j.c))})}).then(function(buf){
+var html=new TextDecoder().decode(buf);document.open();document.write(html);document.close()
+}).catch(function(){e.textContent='That code did not work. Check your purchase email and try again.';g.disabled=false;g.textContent='Unlock'})});
+</script></body></html>
