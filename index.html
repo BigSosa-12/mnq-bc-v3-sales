@@ -90,7 +90,7 @@ footer{margin-top:26px;font-size:.76rem;color:var(--mu);border-top:1px solid var
 @keyframes ifxsh{to{transform:translateX(120%)}}
 .ifx-k{font-size:.74rem;letter-spacing:.12em;color:var(--mu)}.ifx-pnl{font-weight:800;font-size:2.1rem;line-height:1.15;color:#2fd48a;text-shadow:0 0 22px rgba(47,212,138,.8);font-variant-numeric:tabular-nums}.ifx-s{font-size:.7rem;color:var(--mu);margin-top:2px}
 .ifx-c{width:78px;height:98px;flex:none;overflow:visible}.ifx-ent{stroke:rgba(255,255,255,.4);stroke-dasharray:4 4}
-.ifx-g{transform-box:fill-box;transform-origin:50% 100%;animation:ifxup 1.8s .15s cubic-bezier(.2,.8,.2,1) both}@keyframes ifxup{from{transform:scaleY(.08)}}
+.ifx-g{transform-box:fill-box;transform-origin:50% 100%;animation:ifxup 2.6s cubic-bezier(.2,.8,.2,1) infinite}@keyframes ifxup{0%{transform:scaleY(.08)}69%,100%{transform:scaleY(1)}}
 .ifx-wk{stroke:#2fd48a;stroke-width:3}.ifx-bd{fill:#2fd48a;filter:drop-shadow(0 0 10px rgba(47,212,138,.9))}
 .ifx-tag{position:absolute;right:16px;top:8px;font-size:.68rem;color:var(--cy);opacity:.9}
 @media(prefers-reduced-motion:reduce){.ifx-g,.ifx-sheen,.introfx{animation:none}}
@@ -337,7 +337,7 @@ window.addEventListener('pagehide',function(){try{synth.cancel()}catch(e){}});
 }
 
 /* ---------- Ask Heart (Q&A) ---------- */
-(function(){var e=document.getElementById('ifxpnl');if(!e||(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches))return;var t0=null,T=1800,D=480;function f(ts){if(t0===null)t0=ts;var p=Math.min((ts-t0-150)/T,1);if(p<0)p=0;var v=D*(1-Math.pow(1-p,3));e.textContent='+$'+v.toFixed(2);if(p<1)requestAnimationFrame(f)}e.textContent='+$0.00';requestAnimationFrame(f)})();
+(function(){var e=document.getElementById('ifxpnl');if(!e||(window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches))return;var C=2600,U=1800,t0=null,cy=-1,D=480;function f(ts){if(t0===null)t0=ts;var t=ts-t0,c=Math.floor(t/C),l=t-c*C;if(c!==cy){cy=c;D=300+Math.floor(Math.random()*700)}var p=Math.min(l/U,1),v=D*(1-Math.pow(1-p,3));if(p>=1)v=D+Math.sin(l/90)*6;e.textContent='+$'+v.toFixed(2);requestAnimationFrame(f)}requestAnimationFrame(f)})();
 function welcome(){if(welcomed)return;var a=new Audio(asrc('welcome'));try{if(window.__hStop)window.__hStop()}catch(e){}qaAud=a;a.onplaying=function(){welcomed=true;talk(true);setStat('Welcome! Here is what you are getting...');var w=document.getElementById('twel');if(w)w.style.display='none'};a.onended=function(){talk(false);setStat('Tap Start free lesson, or ask me a question below.')};a.onerror=function(){talk(false)};var p=a.play();if(p&&p.catch)p.catch(function(){setStat('Tap "Tap to hear Heart" and I will explain what you are getting.')})}
 var twb=document.getElementById('twel');if(twb)twb.addEventListener('click',welcome);
 if(!(typeof AUD!=='undefined')){setTimeout(function(){try{welcome()}catch(e){}},300);
