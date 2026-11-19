@@ -6,10 +6,10 @@ var f=document.getElementById('f'),e=document.getElementById('e'),g=document.get
 function d(s){var r=atob(s),u=new Uint8Array(r.length);for(var i=0;i<r.length;i++)u[i]=r.charCodeAt(i);return u}
 f.addEventListener('submit',function(ev){ev.preventDefault();e.textContent='';g.disabled=true;g.textContent='Unlocking...';
 fetch('members.enc').then(function(r){return r.json()}).then(function(j){
-var pw=document.getElementById('p').value.trim().toUpperCase();try{sessionStorage.setItem('hc',pw)}catch(e){}
+var pw=document.getElementById('p').value.trim().toUpperCase();
 return crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']).then(function(k){
 return crypto.subtle.deriveKey({name:'PBKDF2',salt:d(j.s),iterations:j.n,hash:'SHA-256'},k,{name:'AES-GCM',length:256},false,['decrypt'])}).then(function(key){
 return crypto.subtle.decrypt({name:'AES-GCM',iv:d(j.i)},key,d(j.c))})}).then(function(buf){
 var html=new TextDecoder().decode(buf);document.open();document.write(html);document.close()
-}).catch(function(){try{sessionStorage.removeItem('hc')}catch(x){}e.textContent='That code did not work. Check your purchase email and try again.';g.disabled=false;g.textContent='Unlock'})});
+}).catch(function(){e.textContent='That code did not work. Check your purchase email and try again.';g.disabled=false;g.textContent='Unlock'})});
 </script></body></html>
