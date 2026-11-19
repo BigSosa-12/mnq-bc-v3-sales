@@ -59,7 +59,7 @@ app.querySelectorAll('[data-n]').forEach(function(e){var n=+e.dataset.n,t0=null;
 setTimeout(function(){app.querySelectorAll('[data-w]').forEach(function(e){e.style.width=e.dataset.w+'%'});app.querySelectorAll('[data-o]').forEach(function(e){e.style.strokeDashoffset=e.dataset.o})},60);
 document.getElementById('sub').textContent='Anonymous counts only. Updated '+new Date().toLocaleTimeString([], {hour:'numeric',minute:'2-digit'})}
 function setup(){app.innerHTML='<div class="glass msg"><h3>Analytics server not connected yet</h3><div class="sub">The page is ready. It just needs the free collector deployed once. Steps are in analytics-worker/README.md in the repo.</div></div>'}
-function load(){if(!API||API.indexOf('REPLACE')>-1){setup();return}fetch(API+'/stats?days='+D,{credentials:'omit'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(render).catch(function(){app.innerHTML='<div class="glass msg"><h3>Could not load the numbers</h3><div class="sub">Check that the analytics server is running, then refresh.</div></div>'})}
+function load(){if(!API||API.indexOf('EXAPI')>-1){setup();return}fetch(API+'/stats?days='+D,{credentials:'omit'}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(render).catch(function(){app.innerHTML='<div class="glass msg"><h3>Could not load the numbers</h3><div class="sub">Check that the analytics server is running, then refresh.</div></div>'})}
 document.getElementById('rng').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;D=+b.dataset.d;this.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b)});load()});
 load();setInterval(function(){if(document.visibilityState==='visible')load()},30000);
 </script></body></html>
