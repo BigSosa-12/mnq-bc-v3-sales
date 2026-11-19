@@ -21,7 +21,7 @@ svg text{fill:var(--mu);font:10px system-ui}.gauge{display:block;margin:0 auto;m
 <p class="note">Clicks on Buy buttons are purchase intent, not sales. Your Stripe dashboard is the source of truth for actual payments. Your own visits are excluded from this device automatically.</p>
 </div>
 <script>
-var API='/*EXAPI*/';try{localStorage.setItem('noTrack','1')}catch(e){}
+var API='https://ex11-analytics.bigsosa012.workers.dev';try{localStorage.setItem('noTrack','1')}catch(e){}
 var D=7,app=document.getElementById('app');
 var LBL={view:'Visit',heart:'Heard Heart',learn:'Opened Learn tab',lesson:'Started free lesson',ask:'Asked Heart a question',buy_ex:'Clicked Buy EX1.1',buy_v3:'Clicked Buy V3'};
 function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}

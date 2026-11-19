@@ -309,7 +309,7 @@ var v3=document.querySelector('nav a[href="#v3"]');if(v3)v3.addEventListener('cl
 <script>
 (function(){
 document.documentElement.classList.add('js');
-var EXAPI='',SX='';
+var EXAPI='https://ex11-analytics.bigsosa012.workers.dev',SX='';
 function ev(t){try{if(!EXAPI||localStorage.getItem('noTrack'))return;if(!SX){SX=sessionStorage.getItem('sx')||'';if(!SX){SX=Math.random().toString(36).slice(2,12)+Date.now().toString(36);sessionStorage.setItem('sx',SX)}}var m=/[?&]src=([a-z]+)/.exec(location.search);navigator.sendBeacon(EXAPI+'/e',new Blob([JSON.stringify({t:t,s:SX,ref:document.referrer||'',r:m?m[1]:''})],{type:'text/plain'}))}catch(e){}}
 var qaAud=null,welcomed=false;
 function talk(on){var g=document.getElementById('greet');if(g)g.classList[on?'add':'remove']('talk')}
