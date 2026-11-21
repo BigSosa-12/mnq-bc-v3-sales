@@ -585,7 +585,7 @@ if(LIVE.test(n)){textBubble(liveMsg());return}
 if(REF.test(n)){clearChips();bubble('ba',KBJ.sp.refuse);speak('qa_refuse');return}
 var isCmp=/(difference between|\bvs\.?\b|versus|compared? (to|with))/.test(n);var fk=followKind(n),eb=0;try{eb=best(q).s}catch(er){}var e=findKB(q),K=lastSc;
 function kbPath(){clearChips();bubble('ba',e.a);speak('qa_'+e.id);try{var bb=best(q);if(bb.s>=3.5){CTX.id=bb.e.id;CTX.shown={};CTX.n++;addChips(bb.e)}}catch(er){}}
-if(e&&!fk&&!isCmp&&K>=3&&K>=eb*.3){kbPath();return}
+if(e&&!fk&&!isCmp&&K>=3&&(K>=eb*.6||K>=8)){kbPath();return}
 var ok=false;try{ok=engineAsk(q)}catch(er){ok=false}if(ok)return;
 if(e){kbPath();return}
 clearChips();bubble('ba',KBJ.sp.unknown);speak('qa_unknown')}
